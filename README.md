@@ -75,20 +75,37 @@ Put downloaded data into the following directory structure:
 
 ```
 python main.py --half=True --batch_size=32 --test_batch_size=64 \
-    --step 50 60 --num_epoch=70 --num_worker=4 --dataset=NW-UCLA --num_class=10 \
+    --step 50 60 --num_epoch=70 --num_worker=0 --dataset=NW-UCLA --num_class=10 \
     --datacase=ucla --weight_decay=0.0003 --num_person=1 --num_point=20 --graph=graph.ucla.Graph \
     --feeder=feeders.feeder_ucla.Feeder --base_lr 1e-1 --base_channel 64 \
-    --window_size 52 --lambda_1=1e-0 --lambda_2=1e-1 --lambda_3=1e-3 --n_step 3
+    --window_size 52 --lambda_1=1e-0 --lambda_2=1e-1 --lambda_3=1e-3 --n_step 3 --asc_dim_trans 10
 ```
+- This is an exmaple command for training SODE on NTU120 dataset. Please change the arguments if you want to customize the training.
+```
+python main.py --half=True --batch_size=32 --test_batch_size=64 \
+    --step 50 60 --num_epoch=70 --num_worker=0 --dataset=ntu120 --num_class=120 \
+    --datacase=CS --weight_decay=0.0003 --num_person=2 --num_point=25 --graph=graph.ntu_rgb_d.Graph \
+    --feeder=feeders.feeder_ntu.Feeder --base_lr 1e-1 --base_channel 64 \
+    --window_size 64 --lambda_1=1e-0 --lambda_2=1e-1 --lambda_3=1e-3 --n_step 3 --asc_dim_trans 10
+```
+
 
 ### Testing
 
 - To test the trained models saved in <work_dir>, run the following command:
 
 ```
-python main.py --half=True --test_batch_size=64 --num_worker=4 --dataset=NW-UCLA --num_class=10 \
+NW-UCLA dataset:
+python main.py --half=True --test_batch_size=64 --num_worker=0 --dataset=NW-UCLA --num_class=10 \
     --datacase=ucla --num_person=1 --num_point=20 --graph=graph.ucla.Graph \
-    --feeder=feeders.feeder_ucla.Feeder --base_channel 64 --window_size 52 --n_step 3 \
+    --feeder=feeders.feeder_ucla.Feeder --base_channel 64 --window_size 52 --n_step 3 --asc_dim_trans 10 \
+    --phase=test --weights=<path_to_weight>
+```
+```
+NTU120 dataset
+python main.py --half=True --test_batch_size=64 --num_worker=0 --dataset=ntu120 --num_class=120 \
+    --datacase=CS --num_person=2 --num_point=25 --graph=graph.ntu_rgb_d.Graph \
+    --feeder=feeders.feeder_ntu.Feeder --base_channel 64 --window_size 64 --n_step 3 --asc_dim_trans 10 \
     --phase=test --weights=<path_to_weight>
 ```
 
@@ -97,4 +114,5 @@ python main.py --half=True --test_batch_size=64 --num_worker=4 --dataset=NW-UCLA
 This repo is based on [2s-AGCN](https://github.com/lshiwjx/2s-AGCN), [CTR-GCN](https://github.com/Uason-Chen/CTR-GCN), [InfoGCN](https://github.com/stnoah1/infogcn), and [InfoGCN++](https://github.com/stnoah1/infogcn2).
 The data processing is borrowed from [SGN](https://github.com/microsoft/SGN), [HCN](https://github.com/huguyuehuhu/HCN-pytorch), and [Predict & Cluster](https://github.com/shlizee/Predict-Cluster).
 We use the Differentiable ODE Solvers for pytorch from [torchdiffeq](https://github.com/rtqichen/torchdiffeq).
+Our ODE space augmentation strategy is derived from (https://github.com/EmilienDupont/augmented-neural-odes).
 Thanks to the original authors for their work!
